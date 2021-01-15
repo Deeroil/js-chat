@@ -14,6 +14,11 @@ app.use(bodyParser.json())
 app.use(cookieParser(process.env.SECRET))
 app.use(express.static('frontend'))
 
+app.get('/postgres', async (req, res) => {
+  const { rows } = await pool.query('SELECT version()')
+  res.json(rows[0])
+})
+
 app.get('/api/user/info', async (req, res) => {
   const userId = req.signedCookies.loggedIn
   if (!userId) {
