@@ -1,6 +1,6 @@
 const createUser = () => {
   const username = document.getElementById("username").value
-  fetch('/api/user/create', {
+  fetch('/api/account/create', {
     method: 'post',
     headers: {
       'Accept': 'application/json, text/plain, */*',
@@ -14,7 +14,7 @@ const createUser = () => {
 
 const login = () => {
   const username = document.getElementById("username").value
-  fetch('/api/user/login', {
+  fetch('/api/account/login', {
     method: 'post',
     headers: {
       'Accept': 'application/json, text/plain, */*',
