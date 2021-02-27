@@ -1,7 +1,5 @@
 const accountRouter = require('express').Router()
-const { Pool } = require('pg')
-
-const pool = new Pool()
+const { pool } = require('../sql')
 
 accountRouter.get('/info', async (req, res) => {
   const userId = req.signedCookies.loggedIn

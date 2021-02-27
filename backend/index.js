@@ -3,11 +3,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const http = require('http')
-const { Pool } = require('pg')
+const { pool } = require('./sql')
 const accountRouter = require('./controllers/account')
-
-//multiple require/pools... hm. 
-const pool = new Pool()
 
 const app = express()
 const server = http.createServer(app)
