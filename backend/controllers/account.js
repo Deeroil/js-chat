@@ -38,12 +38,17 @@ accountRouter.post('/login', async (req, res) => {
     res.status(400).json({ error: "User not found" })
     return
   }
-
+  console.log('login rows:', rows)
   const id = rows[0].id
-  //add expiration later
+  console.log('login id:', id)
+  //is cookie-parser used at all?
+  //httpOnly? secure: true?
+  //fix the expiration time, do I want to use maxAge?
   res.cookie('loggedIn', id,
-    { signed: true, sameSite: 'strict', /*secure: true*/ })
-  res.status(201).end() //end?
+    { signed: true, expires: new Date(Date.now() + 90000000000), sameSite: 'strict' }
+  )
+
+  res.status(201).json('Logged in!')
 })
 
 //logs you out even if you arent logged in
