@@ -1,3 +1,7 @@
+const supertest = require('supertest')
+const app = require('../app')
+const api = supertest(app)
+
 describe('testing /test', () => {
   test('test works with test obj', async () => {
     const result = await api

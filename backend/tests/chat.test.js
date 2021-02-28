@@ -27,7 +27,7 @@ test('can connect to postgres', async () => {
 
 //req.body is empty, fails
 describe('account creation', () => {
-  test.only('succeeds with new name', async () => {
+  test('succeeds with new name', async () => {
     const result = await api
       .post('/api/account/create')
       .send('Bob')
