@@ -21,8 +21,8 @@ test('can get /postgres', async () => {
 })
 
 test('can connect to postgres', async () => {
-  const { rows } = await pool.query('SELECT version()', { password: 'postgres' })
-  expect(rows).toContain('version 1')
+  const { rows } = await pool.query('SELECT version()')
+  expect(rows.version).toContain('compiled by Visual C++ build')
 })
 
 //req.body is empty, fails
