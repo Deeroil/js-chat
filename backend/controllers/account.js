@@ -21,6 +21,13 @@ accountRouter.post('/create', async (req, res) => {
     res.status(400).json({ error: "Username too short" })
     return
   }
+
+  const namesake = await pool.query('SELECT name FROM Account WHERE name=($1)', [username])
+  if (namesake) {
+    res.status(400).json({ error: 'Username already exists' })
+    //do we need to return?
+  }
+
   const { rows } = await pool.query('INSERT INTO Account (name) VALUES ($1) RETURNING id', [username])
 
   res.json({ id: rows[0].id })
