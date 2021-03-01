@@ -1,5 +1,5 @@
+const { pool } = require('./common')
 const supertest = require('supertest')
-const { pool } = require('../sql')
 const app = require('../app')
 const api = supertest(app)
 
@@ -17,17 +17,18 @@ test('can get /postgres', async () => {
     .get('/postgres')
     .expect(200)
 
-  expect(result.body).toContain('Postgres version')
+  expect(result.body.version).toContain('PostgreSQL')
 })
 
 test('can connect to postgres', async () => {
   const { rows } = await pool.query('SELECT version()')
-  expect(rows.version).toContain('compiled by Visual C++ build')
+  expect(rows[0].version).toContain('PostgreSQL')
 })
 
 //req.body is empty, fails
 describe('account creation', () => {
   test('succeeds with new name', async () => {
+    // const username = 
     const result = await api
       .post('/api/account/create')
       .send('Bob')
