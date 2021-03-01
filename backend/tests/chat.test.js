@@ -1,7 +1,8 @@
 const supertest = require('supertest')
-const { pool } = require('../sql')
 const app = require('../app')
 const api = supertest(app)
+
+const {pool} = require('./common')
 
 /** Muista kattella ettei unohdu asyncit
  * Hmm, se key -valitus taitaa olla sittenkin postgres-ongelma,
@@ -17,20 +18,21 @@ test('can get /postgres', async () => {
     .get('/postgres')
     .expect(200)
 
-  expect(result.body).toContain('Postgres version')
+  expect(result.body.version).toContain('PostgreSQL')
 })
 
 test('can connect to postgres', async () => {
-  const { rows } = await pool.query('SELECT version()', { password: 'postgres' })
-  expect(rows).toContain('version 1')
+  const { rows } = await pool.query('SELECT version()')
+  expect(rows[0].version).toContain('PostgreSQL')
 })
 
 //req.body is empty, fails
 describe('account creation', () => {
   test('succeeds with new name', async () => {
+    let username = "Bob" + Math.random();
     const result = await api
       .post('/api/account/create')
-      .send('Bob')
+      .send({username})
     //ei voi laittaa send({username: 'Bob' })
     //kun sit tulee type error,
     //mut jos laitan objektina nii response valittaa että username empty
@@ -38,7 +40,7 @@ describe('account creation', () => {
 
     console.log('result.body', result.body)
 
-    expect(result.text).toContain('Bob') //placeholder, tsekkaan vaan mitä sieltä tulee
+    expect(result.text).toContain(username)
   })
 
   test('fails with existing name', async () => {
