@@ -23,9 +23,9 @@ accountRouter.post('/create', async (req, res) => {
   }
 
   const namesake = await pool.query('SELECT name FROM Account WHERE name=($1)', [username])
-  if (namesake) {
-    res.status(400).json({ error: 'Username already exists' })
-    //do we need to return?
+  if (namesake.rows[0]) {
+    res.status(400).json({ error: `Username '${namesake.rows[0].name}' already exists` })
+    return
   }
 
   const { rows } = await pool.query('INSERT INTO Account (name) VALUES ($1) RETURNING id', [username])
