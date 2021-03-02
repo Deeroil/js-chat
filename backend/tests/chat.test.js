@@ -4,12 +4,7 @@ const app = require('../app')
 const api = supertest(app)
 
 /** Muista kattella ettei unohdu asyncit
- * Hmm, se key -valitus taitaa olla sittenkin postgres-ongelma,
- * ehkä mun pitää mockaa sitä jotenkin?
- * Tai jotenkin kirjautua sinne sisälle tjsp
- * Tai pg pitää ehkä jotenkin maagisesti konfiguroida
- * 
- * Kaikkien account-routejen testausten status on 400, ja erroria koska body.req on tyhjä
+ * Haluunko username. vai name.
  */
 
 test('can get /postgres', async () => {
@@ -25,76 +20,49 @@ test('can connect to postgres', async () => {
   expect(rows[0].version).toContain('PostgreSQL')
 })
 
-//req.body is empty, fails
 describe('account creation', () => {
   test('succeeds with new name', async () => {
-    // const username = 
+    const username = 'Bob' + Math.random()
     const result = await api
       .post('/api/account/create')
-      .send('Bob')
-    //ei voi laittaa send({username: 'Bob' })
-    //kun sit tulee type error,
-    //mut jos laitan objektina nii response valittaa että username empty
-    // .expect(200)
+      .send({ username: username })
+      .expect(200)
 
-    console.log('result.body', result.body)
-
-    expect(result.text).toContain('Bob') //placeholder, tsekkaan vaan mitä sieltä tulee
+    expect(result.text).toContain('id')  
+    
+    const userId = JSON.parse(result.text).id
+    const { rows } = await pool.query('SELECT name FROM Account WHERE id = $1', [userId])
+    expect(rows[0].name).toContain(username)
   })
 
   test('fails with existing name', async () => {
     const result = await api
       .post('/api/account/create')
-      .type('text')
-      .send('Miinu')
-    // .expect(400) //menee rikki jos
+      .send({ username: 'Miinu' })
+      .expect(400)
 
-    expect(result.text).toContain('Username already exists')
+    expect(result.text).toContain('Username \'Miinu\' already exists')
   })
 })
 
 describe('login to backend', () => {
-  // beforeEach(async () => {
-  //   const newUser = {
-  //     username: 'user',
-  //   }
-  //   //vai const user = 'user' ...?
-  //   const result = await api
-  //     .post('/api/login')
-  //     .send(newUser)
-  // })
-
-  //bad request, kai !username?
   test('succeeds with Miinu', async () => {
     const result = await api
       .post('/api/account/login')
-      .send('Miinu')
-    // .expect(201)
-
-    // console.log('result Miinu:', result)
-    expect(result.text).toContain('Logged in!')
-    //also test .get('/api/account/info') for Miinu
-  })
-
-  /*
-  // TypeError: The "key" argument must be of type string or an instance of Buffer,...
-  //... received null
-  test('login succeeds with correct name', async () => {
-    //expert res to be blabla
-    // const username = { username: 'Miinu' } //lienee tää rivi!
-    const username = 'Saalis'
-    const result = await api
-      .post('/api/account/login')
-      .send(username)
+      .send({ username: 'Miinu' })
       .expect(201)
 
-    console.log('result:', result)
     expect(result.text).toContain('Logged in!')
+
+    // cookies dont work
+    // const info = api
+    //   .get('/api/account/info')
+    //   .expect(200)
+    // console.log('info:', info)
+    // expect(info).toContain('Miinu')
   })
-  */
 
   test('fails without name', async () => {
-    //expert res to be blabla
     const result = await api
       .post('/api/account/login')
       .send({})
@@ -105,11 +73,24 @@ describe('login to backend', () => {
 
 /*
 describe('logout', () => {
+  //I prob need to mock document.cookie
   test('logout removes cookie', () => {
     //check no cookie?
+    
     //login
+    await api
+    .post('/api/account/login')
+    .send({ username: 'Miinu' })
+    .expect(201)
+
     //check cookie exists
+    const result = await api
+      .get('/')
+
+    console.log('result')
+
     //then logout
+    expect(1).toBe(2)
   })
 })
 */
