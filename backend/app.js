@@ -17,4 +17,12 @@ app.get('/postgres', async (req, res) => {
   res.json(rows[0])
 })
 
+app.get('/login', async (req, res) => {
+  res.redirect('/app.html') //öh
+})
+
+app.get('/logout', (req, res) => {
+  res.redirect('/login.html')
+})
+
 module.exports = app

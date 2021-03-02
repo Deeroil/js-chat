@@ -55,13 +55,17 @@ accountRouter.post('/login', async (req, res) => {
     { signed: true, expires: new Date(Date.now() + 90000000000), sameSite: 'strict' }
   )
 
-  res.status(201).json('Logged in!')
+  // res.status(201).json('Logged in!')
+  // redirect to app.html!
+  res.redirect('/app.html')
 })
 
 //logs you out even if you arent logged in
 accountRouter.post('/logout', async (req, res) => {
   res.cookie('loggedIn', '', { expires: new Date(Date.now()) })
   res.status(200).json('Logged out!')
+  // redirect to login.html
+  res.redirect('/login.html') //näh ei toimi
 })
 
 module.exports = accountRouter
