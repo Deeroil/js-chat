@@ -26,7 +26,13 @@ const login = () => {
       console.log('login res', res)
       // res.json() //tää valitti että unexpected end of JSON input
     })
-    .then(res => console.log(res))
+    .then(res =>{
+      console.log(res)
+      //i feel like these dont belong here.
+      // window.location.reload()
+      // window.location.href = 'http://localhost:3003/app.html'
+      // window.location = 'http://localhost:3003/app.html' <-- not a good plan 
+    })
 }
 
 const logout = () => {
