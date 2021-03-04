@@ -56,8 +56,12 @@ accountRouter.post('/login', async (req, res) => {
   )
 
   // res.status(201).json('Logged in!')
-  // redirect to app.html!
-  res.redirect('/app.html')
+
+  const origin = req.get('origin')
+  console.log('login origin', origin)
+  //tää redirectautuu post-requestina, eikä se tietty osaa ottaa vastaan semmosta
+  // res.redirect(307, `${origin}/app.html`)
+  res.redirect(302, `${origin}/app.html`)
 })
 
 //logs you out even if you arent logged in
@@ -65,7 +69,8 @@ accountRouter.post('/logout', async (req, res) => {
   res.cookie('loggedIn', '', { expires: new Date(Date.now()) })
   res.status(200).json('Logged out!')
   // redirect to login.html
-  res.redirect('/login.html') //näh ei toimi
+  const origin = req.get('origin')
+  res.redirect(307, `${origin}/login.html`)
 })
 
 module.exports = accountRouter

@@ -18,7 +18,7 @@ app.get('/postgres', async (req, res) => {
 })
 
 app.get('/login', async (req, res) => {
-  res.redirect('/app.html') //öh
+  res.redirect('/app.html')
 })
 
 app.get('/logout', (req, res) => {
