@@ -10,6 +10,16 @@ Will probably add a React UI later
 
 ----
 Some scratchpad stuff:
+
+* How does redirecting work? Refreshing the page?
+  - Express res.redirect('/blabla') doesn't work if it's a post request!
+    * https://stackoverflow.com/questions/43182358/express-login-with-redirect-using-node-js
+  - should I load the page on frontend side..?
+    - window.location = 'http://localhost:3003/app.html'
+    - happens even if the request fails :/
+
+* Shouldn't install Jest on top of Create-React-App's Jest. Figure out how to handle this.
+
 ```
 POST /api/account/create
 POST /api/account/login
