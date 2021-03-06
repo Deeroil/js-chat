@@ -1,4 +1,3 @@
-const { pool } = require('./common')
 const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
@@ -10,7 +9,7 @@ describe('testing /test', () => {
       .send({ test: 'jiihaa' })
       .expect(201)
 
-    expect(result.body).toContain('jiihaa') //miks se menee .textiin :D
+    expect(result.body).toContain('jiihaa')
   })
 
   test('test fails with wrong obj', async () => {
@@ -19,7 +18,7 @@ describe('testing /test', () => {
       .send({ wrong: 'jiihaa' })
       .expect(400)
 
-    expect(result.body.error).toContain('test not found from body') //miks se menee .textiin :D koska se on vaan teksti?
+    expect(result.body.error).toContain('test not found from body')
   })
 
   test('test fails with undefined', async () => {
@@ -28,6 +27,6 @@ describe('testing /test', () => {
       .send(undefined)
       .expect(400)
 
-    expect(result.body.error).toContain('test not found from body') //miks se menee .textiin :D koska se on vaan teksti?
+    expect(result.body.error).toContain('test not found from body')
   })
 })
