@@ -17,4 +17,16 @@ app.get('/postgres', async (req, res) => {
   res.json(rows[0])
 })
 
+app.post('/test', async (req, res) => {
+  if (!req.body) {
+    res.status(400).json({ error: 'body not found' })
+  }
+
+  if (!req.body.test) {
+    res.status(400).json({ error: 'test not found from body' })
+  }
+
+  res.status(201).json(req.body.test)
+})
+
 module.exports = app
