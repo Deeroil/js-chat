@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node backend/index.js",
-    "dev": "nodemon backend/index.js",
-    "test": "jest --verbose"
+    "start": "cross-env NODE_ENV=production node backend/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon backend/index.js",
+    "test": "cross-env NODE_ENV=test jest --verbose"
   },
   "author": "Miina Saroma",
   "license": "MIT",
@@ -17,6 +17,7 @@
     "pg": "^8.5.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
