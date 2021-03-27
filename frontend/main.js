@@ -22,11 +22,15 @@ const login = () => {
     },
     body: JSON.stringify({ username: username })
   })
+    .then(res => res.json())
     .then(res => {
-      console.log('login res', res)
-      // res.json() //tää valitti että unexpected end of JSON input
+      console.log(res)
+      if (res.success === true) {
+        window.location = '/app.html'
+      } else {
+        console.log('could not log in :/')
+      }
     })
-    .then(res => console.log(res))
 }
 
 const logout = () => {
@@ -37,9 +41,12 @@ const logout = () => {
       'Content-Type': 'application/json'
     },
   })
-  .then(res => {
-    console.log('logout res', res)
-    res.json()
-  })
-    .then(res => console.log(res))
+    .then(res => res.json())
+    .then(res => {
+      if (res.success === true) {
+        window.location = '/'
+      } else {
+        console.log('could not log out :/')
+      }
+    })
 }

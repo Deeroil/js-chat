@@ -54,14 +54,13 @@ accountRouter.post('/login', async (req, res) => {
   res.cookie('loggedIn', id,
     { signed: true, expires: new Date(Date.now() + 90000000000), sameSite: 'strict' }
   )
-
-  res.status(201).json('Logged in!')
+  res.json({ success: true })
 })
 
 //logs you out even if you arent logged in
 accountRouter.post('/logout', async (req, res) => {
   res.cookie('loggedIn', '', { expires: new Date(Date.now()) })
-  res.status(200).json('Logged out!')
+  res.json({ success: true })
 })
 
 module.exports = accountRouter
