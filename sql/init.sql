@@ -11,8 +11,8 @@ CREATE TABLE Channel (
 
 CREATE TABLE Message (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  sender UUID NOT NULL, -- foreign key?
-  channel UUID NOT NULL, -- foreign key?
+  sender UUID NOT NULL REFERENCES Account (id), 
+  channel UUID NOT NULL REFERENCES Channel (id),
   text TEXT,
   media BYTEA,
   media_type TEXT,
@@ -20,7 +20,7 @@ CREATE TABLE Message (
 );
 
 CREATE TABLE Channel_Account (
-  channel UUID NOT NULL, -- foreign key?
-  account UUID NOT NULL, -- foreign key?
-  last_seen UUID -- foreign key?
+  channel UUID NOT NULL REFERENCES Channel (id),
+  account UUID NOT NULL REFERENCES Account (id),
+  last_seen UUID REFERENCES Message (id)
 );
