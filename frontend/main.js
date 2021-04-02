@@ -50,3 +50,37 @@ const logout = () => {
       }
     })
 }
+
+const sendMessage = async () => {
+  const msg = document.getElementById('message')
+  
+  if (msg.value.length === 0) {
+    return
+  }
+  
+  await fetch('/api/message/create', {
+    method: 'post',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message: msg.value })
+  })
+  msg.value = ''
+}
+
+const initApp = async () => {
+  getMessages()
+  setInterval(getMessages, 500)
+}
+
+const getMessages = async () => {
+  const messages = document.getElementById('messages')
+  const response = await fetch('/api/message/all')
+  const data = await response.json()
+  messages.innerText = ''
+  
+  data.forEach(msg => {
+    messages.innerText += '\n' + msg.name + ': ' + msg.text
+  })
+}

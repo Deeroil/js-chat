@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const accountRouter = require('./controllers/account')
+const messageRouter = require('./controllers/message')
 const { pool } = require('./sql')
 
 const app = express()
@@ -11,6 +12,7 @@ app.use(cookieParser(process.env.SECRET))
 app.use(express.static('frontend'))
 
 app.use('/api/account', accountRouter)
+app.use('/api/message', messageRouter)
 
 app.get('/postgres', async (req, res) => {
   const { rows } = await pool.query('SELECT version()')
