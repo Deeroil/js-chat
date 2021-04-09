@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const accountRouter = require('./controllers/account')
+const channelRouter = require('./controllers/channel')
 const messageRouter = require('./controllers/message')
 const { pool } = require('./sql')
 
@@ -12,6 +13,7 @@ app.use(cookieParser(process.env.SECRET))
 app.use(express.static('frontend'))
 
 app.use('/api/account', accountRouter)
+app.use('/api/channel', channelRouter)
 app.use('/api/message', messageRouter)
 
 app.get('/postgres', async (req, res) => {
