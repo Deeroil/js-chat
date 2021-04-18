@@ -22,5 +22,6 @@ CREATE TABLE Message (
 CREATE TABLE Channel_Account (
   channel UUID NOT NULL REFERENCES Channel (id),
   account UUID NOT NULL REFERENCES Account (id),
-  last_seen UUID REFERENCES Message (id)
+  last_seen UUID REFERENCES Message (id),
+  UNIQUE (channel, account)
 );
