@@ -23,7 +23,7 @@ accountRouter.post('/create', async (req, res) => {
   }
 
   const namesake = await pool.query('SELECT name FROM Account WHERE name=($1)', [username])
-  if (namesake.rows[0]) {
+  if (namesake.rows.length > 0) {
     res.status(400).json({ error: `Username '${namesake.rows[0].name}' already exists` })
     return
   }
