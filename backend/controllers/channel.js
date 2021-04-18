@@ -43,23 +43,26 @@ channelRouter.post('/invite', async (req, res) => {
   const channelRes = await pool.query('SELECT (id) FROM Channel WHERE name = ($1)', [channel])
   const userRes = await pool.query('SELECT (id) FROM Account WHERE name = ($1)', [invited])
 
-  const channelUUID = channelRes.rows[0].id
-  const userUUID = userRes.rows[0].id
-
-  if (!channelUUID || !userUUID) {
+  if (!channelRes.rows.length > 0 || !userRes.rows.length > 0) {
     res.status(400).json({ error: 'channel or user not found' })
     return
   }
 
+  //should check if id exists?
+  const channelUUID = channelRes.rows[0].id
+  const userUUID = userRes.rows[0].id
+
   const clone = await pool.query('SELECT * FROM Channel_Account WHERE channel = ($1) AND account = ($2)', [channelUUID, userUUID])
   
-  if (clone.rows[0].length > 0) {
-    res.status(400).json({ error: `already joined ${channel}` })       
-    return
-  }
+  console.log('CLONE:', clone)
+  console.log('CLONE.ROWS:', clone.rows)
 
-  await pool.query('INSERT INTO Channel_Account (account, channel) VALUES ($1, $2)', [userUUID, channelUUID])
-  res.json({ success: true })
+  if (clone.rows.length > 0) {
+    res.status(400).json({ error: `already joined ${channel}` })       
+  } else {
+    await pool.query('INSERT INTO Channel_Account (account, channel) VALUES ($1, $2)', [userUUID, channelUUID])
+    res.json({ success: true })
+  }
 })
 
 //TODO: maybe move to /api/account
