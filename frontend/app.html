@@ -16,6 +16,12 @@
     <!-- we can logout even if we're not logged in, there's no conditional rendering yet-->
     <input type="button" value="logout" onclick="logout()" />
     <div>
+      <input type="text" placeholder="channel name" id="channelname" />
+      <input type="button" value="create channel" onclick="createChannel()" />
+      <input type="button" value="join channel" onclick="joinChannel()" />
+    </div>
+    <div id="radioboxes"></div>
+    <div>
       <input type="text" placeholder="message" id="message" />
       <input type="button" value="send" onclick="sendMessage()" />
     </div>
