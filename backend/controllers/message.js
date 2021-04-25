@@ -1,7 +1,6 @@
 const messageRouter = require('express').Router()
 const { pool } = require('../sql')
 
-//TODO: Check if logged in user is in the channel
 messageRouter.post('/create', async (req, res) => {
   const message = req.body.message
   const userUUID = req.signedCookies.loggedIn
@@ -9,6 +8,17 @@ messageRouter.post('/create', async (req, res) => {
 
   if (!message || !userUUID || !channelUUID) {
     res.status(400).json({ error: 'missing argument' })
+    return
+  }
+
+  //make this a helper function later
+  const result = await pool.query(
+    `SELECT channel FROM Channel_Account WHERE channel = ($1) AND account = ($2)`,
+    [channelUUID, userUUID]
+  )
+
+  if (result.rows.length === 0) {
+    res.status(400).json({ error: 'User isn\'t on the channel' })
     return
   }
 
@@ -25,14 +35,28 @@ messageRouter.get('/all', async (req, res) => {
   res.json(rows)
 })
 
-//TODO: check if logged in account is on the channel = has permission
-// if channel doesn't exist
 //should I rather send channel in body
 //move to /api/channel? maybe /api/channel/messages
 messageRouter.get('/:channel', async (req, res) => {
   const channelUUID = req.params.channel
+  const userUUID = req.signedCookies.loggedIn
 
-  // should throw error if channel doesn't exist
+  if (!userUUID) {
+    res.status(400).json({ error: 'Not logged in' })
+    return  
+  }
+
+  //do I want to check if the channel exists at all?
+
+  const result = await pool.query(
+    `SELECT channel FROM Channel_Account WHERE channel = ($1) AND account = ($2)`,
+    [channelUUID, userUUID]
+  )
+
+  if (result.rows.length === 0) {
+    res.status(400).json({ error: 'User isn\'t on the channel' })
+    return
+  }
 
   const { rows } = await pool.query(
     `SELECT text, name, Message.created
