@@ -43,7 +43,7 @@ channelRouter.post('/invite', async (req, res) => {
   const channelRes = await pool.query('SELECT (id) FROM Channel WHERE name = ($1)', [channel])
   const userRes = await pool.query('SELECT (id) FROM Account WHERE name = ($1)', [invited])
 
-  if (!channelRes.rows.length > 0 || !userRes.rows.length > 0) {
+  if (channelRes.rows.length === 0 || userRes.rows.length === 0) {
     res.status(400).json({ error: 'channel or user not found' })
     return
   }
