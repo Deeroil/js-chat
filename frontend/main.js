@@ -35,20 +35,7 @@ const createChannel = async () => {
   const data = await res.json()
 
   if (data.id) {
-    const radioboxes = document.getElementById('radioboxes')
-
-    let input = document.createElement('input')
-    input.type = 'radio'
-    input.name = 'channel'
-    input.value = name.value
-    input.id = data.id
-
-    let label = document.createElement('label')
-    label.for = data.id
-    label.innerText = name.value
-  
-    radioboxes.parentNode.insertBefore(label, radioboxes.nextSibling)
-    radioboxes.parentNode.insertBefore(input, radioboxes.nextSibling)  
+    createChannelRadiobox({ name: name.value, id: data.id })
   }
 
   name.value = ''
@@ -72,43 +59,35 @@ const joinChannel = async () => {
   const data = await res.json()
 
   if (data.id) {
-    const radioboxes = document.getElementById('radioboxes')
-
-    let input = document.createElement('input')
-    input.type = 'radio'
-    input.name = 'channel'
-    input.value = name.value
-    input.id = data.id
-
-    let label = document.createElement('label')
-    label.for = data.id
-    label.innerText = name.value
-  
-    radioboxes.parentNode.insertBefore(label, radioboxes.nextSibling)
-    radioboxes.parentNode.insertBefore(input, radioboxes.nextSibling)  
+    createChannelRadiobox({ name: name.value, id: data.id })
   }
   name.value = ''
 }
 
-const getJoinedChannels = async () => {
+const createChannelRadiobox = (channel) => {
   const radioboxes = document.getElementById('radioboxes')
+
+  let input = document.createElement('input')
+  input.type = 'radio'
+  input.name = 'channel'
+  input.value = channel.name
+  input.id = channel.id
+  
+  let label = document.createElement('label')
+  label.for = channel.id
+  label.innerText = channel.name
+
+  radioboxes.parentNode.insertBefore(label, radioboxes.nextSibling)
+  radioboxes.parentNode.insertBefore(input, radioboxes.nextSibling)
+}
+
+const getJoinedChannels = async () => {
   const response = await fetch('/api/channel/joined')
   const data = await response.json()
   console.log('data:', data)
 
   data.forEach(channel => {
-    let input = document.createElement('input')
-    input.type = 'radio'
-    input.name = 'channel'
-    input.value = channel.name
-    input.id = channel.id
-    
-    let label = document.createElement('label')
-    label.for = channel.id
-    label.innerText = channel.name
-
-    radioboxes.parentNode.insertBefore(label, radioboxes.nextSibling)
-    radioboxes.parentNode.insertBefore(input, radioboxes.nextSibling)
+    createChannelRadiobox(channel)
   })
 }
 
