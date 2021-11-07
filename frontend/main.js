@@ -2,15 +2,13 @@
  * TODO:
  * Switch to await/async syntax
  * Add passwords and error handling (try/catch?)
- * Make helper functions getCheckedChannel and createRadiobutton
- * Maybe change name for getChannelMsgs, it prints them, too
  * 
  * Lisää TODO:
- *  - ylin chatissa näytetty viesti on nyt uusin viesti, käännä toisin päin
+ *  - ylin chatissa näytetty viesti on nyt uusin viesti, käännä toisin päin (ehkä myöhemmin, nyt tää on ihan ok)
  *  - erittele erillisiksi funktioiksi vanhojen/uusien viestien hakeminen
  *    - mm. eri endpointit uusien/vanhojen viestien hakemisiin
  *  - älä hae (vanhoja) viestejä enempää jos niitä ei ole
- *  - korjaa uuden viestin lisääminen
+ *  - korjaa uuden viestin lisääminen (niin että se näkyy heti lisäämisen jälkeen, VAI oliko muutakin?)
  */
 
 const getChannels = async () => {
@@ -97,8 +95,7 @@ const getJoinedChannels = async () => {
   })
 }
 
-const sendMessage = async () => {
-  const msg = document.getElementById('message')
+const getCheckedChannel = async () => {
   let channel = ''
   let el = document.getElementsByName('channel')
 
@@ -110,6 +107,15 @@ const sendMessage = async () => {
       break
     }
   }
+
+  return channel
+}
+
+const sendMessage = async () => {
+  const msg = document.getElementById('message')
+  let channel = await getCheckedChannel()
+
+  console.log('sendMessage channel:', channel)
 
   if (msg.value.length === 0) {
     return
@@ -128,10 +134,11 @@ const sendMessage = async () => {
 
 const initApp = async () => {
   getJoinedChannels()
-  setInterval(getChannelMsgs, 500)
+  //laita uusien viestien haku setIntervalliin, ei vanhojen
+  setInterval(getMessageHistory, 500)
 }
 
-//this could get a param which has the channel and be used as in getChannelMsgs
+//this could get a param which has the channel and be used as in getMessageHistory
 const getMessages = async () => {
   const messages = document.getElementById('messages')
   const response = await fetch('/api/message/all')
@@ -148,24 +155,18 @@ let messageHistory = []
 let oldestMessageDate = ''
 let prevChannel = null
 
-const getChannelMsgs = async () => {
-  let checkedChannel = ''
-  let el = document.getElementsByName('channel')
+const getMessageHistory = async () => {
+  let checkedChannel = await getCheckedChannel()
+  const channelId = checkedChannel.id
 
-  // find checked radiobox
-  for (i = 0; i < el.length; i++) {
-    if (el[i].checked) {
-      checkedChannel = el[i].id
-      break
-    }
-  }
+  console.log('Channel getMessageHistory:', checkedChannel)
 
-  if (!checkedChannel) {
+  if (!channelId) {
     console.log('no channel picked')
     return
   }
   
-  if (checkedChannel !== prevChannel) {
+  if (channelId !== prevChannel) {
     oldestMessageDate = ''
     messageHistory = []
 
@@ -173,11 +174,11 @@ const getChannelMsgs = async () => {
     messages.innerText = ''
   }
 
-  prevChannel = checkedChannel
+  prevChannel = channelId
 
   console.log('oldestMessageDate:', oldestMessageDate)
 
-  const response = await fetch(`/api/message/${checkedChannel}?limit=3&offset=${oldestMessageDate}`)
+  const response = await fetch(`/api/message/${channelId}?limit=3&offset=${oldestMessageDate}`)
   const data = await response.json()
   console.log('data:', data)
 
